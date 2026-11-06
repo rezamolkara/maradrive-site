@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>MARA Drive · Callback</title>
+<style>
+  body{margin:0;font-family:system-ui,sans-serif;background:#0f1115;color:#e8e8e8;padding:32px}
+  code{display:block;word-break:break-all;background:#1b1e25;padding:12px;border-radius:8px;margin:8px 0}
+  button{padding:8px 14px;border-radius:8px;border:0;background:#4c6fff;color:#fff;cursor:pointer}
+  p{color:#b9bcc4}
+</style>
+</head>
+<body>
+  <h2>MARA Drive</h2>
+  <p id="msg">Kod okunuyor…</p>
+  <div id="out" hidden>
+    <p>Authorization code:</p><code id="code"></code>
+    <button onclick="navigator.clipboard.writeText(document.getElementById('code').textContent)">Kopyala / Copy</button>
+    <p>State:</p><code id="state"></code>
+  </div>
+  <script>
+    // Nothing is sent anywhere. The code is only shown so the owner can paste it into the local tool.
+    const q = new URLSearchParams(location.search);
+    const code = q.get('code'), state = q.get('state'), err = q.get('error');
+    const msg = document.getElementById('msg');
+    if (err) { msg.textContent = 'Hata / Error: ' + err; }
+    else if (code) {
+      msg.textContent = 'Giriş başarılı. Bu kodu yerel araca yapıştırın (tek kullanımlık, kısa ömürlü).';
+      document.getElementById('code').textContent = code;
+      document.getElementById('state').textContent = state || '';
+      document.getElementById('out').hidden = false;
+      history.replaceState(null, '', location.pathname); // remove code from address bar
+    } else { msg.textContent = 'Kod bulunamadı / No code found.'; }
+  </script>
+</body>
+</html>
